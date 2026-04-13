@@ -116,7 +116,9 @@ select {
 .bf-inner { overflow: hidden; }
 
 /* ─── 2-COL FIELD ROW ─── */
-.fields-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.fields-2 { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+/* Expand to 2 columns on screens 640px and wider */
+@media(min-width: 640px) { .fields-2 {grid-template-columns: 1fr 1fr; }}
 
 /* ─── FORMULA PILLS ─── */
 .formula-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: .625rem; }
