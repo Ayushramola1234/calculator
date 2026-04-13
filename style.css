@@ -251,12 +251,30 @@ select {
 .qg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .625rem; }
 .qg-card { border: 1.5px solid var(--slate-200); border-radius: var(--radius-lg); padding: .875rem .625rem; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer; transition: all .2s; position: relative; }
 .qg-card.maintain-card { border-color: var(--emerald-400); background: rgba(236,253,245,.25); }
-.qg-current { position: absolute; top: -.5625rem; left: 50%; transform: translateX(-50%); background: var(--emerald-500); color: var(--white); font-size: .5rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; padding: .175rem .625rem; border-radius: var(--radius-full); white-space: nowrap; }
+.qg-current { 
+  position: absolute; 
+  top: -.65rem; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  background: var(--emerald-500); 
+  color: var(--white); 
+  font-size: 0.75rem; /* Increased from 8px */
+  font-weight: 800; 
+  text-transform: uppercase; 
+  letter-spacing: .05em; 
+  padding: .15rem .625rem; 
+  border-radius: var(--radius-full); 
+  white-space: nowrap; 
+}
 .qg-icon { display: flex; margin-bottom: .375rem; }
 .qg-title { font-size: .75rem; font-weight: 700; color: var(--slate-700); margin-bottom: .3rem; }
 .qg-val { font-size: .9375rem; font-weight: 800; letter-spacing: -.025em; line-height: 1.2; }
-.qg-rate { font-size: .5625rem; color: var(--slate-400); margin-top: .2rem; font-weight: 500; }
-
+.qg-rate { 
+  font-size: 0.75rem; /* Increased from 9px */
+  color: var(--slate-500); 
+  margin-top: .2rem; 
+  font-weight: 600; 
+}
 /* ═══════════════════════════
    MACROS SECTION
 ═══════════════════════════ */
