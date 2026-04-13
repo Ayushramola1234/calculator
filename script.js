@@ -205,4 +205,44 @@ document.addEventListener('DOMContentLoaded', () => {
   setFormula('mifflin');
   setAct('moderate');
   calculate();
+
+  // ── Carousel Navigation Logic ──
+function initCarousels() {
+  // Find every section that contains a carousel
+  const carouselSections = document.querySelectorAll('.cc-sec');
+
+  carouselSections.forEach(section => {
+    const scrollContainer = section.querySelector('.cc-scroll');
+    const navButtons = section.querySelectorAll('.nav-btn');
+
+    // Ensure we have the container and exactly two buttons (left and right)
+    if (scrollContainer && navButtons.length === 2) {
+      const btnLeft = navButtons[0];
+      const btnRight = navButtons[1];
+
+      // Define how far it should scroll per click (roughly one card width + gap)
+      const scrollAmount = 280; 
+
+      btnLeft.addEventListener('click', () => {
+        scrollContainer.scrollBy({
+          left: -scrollAmount,
+          behavior: 'smooth'
+        });
+      });
+
+      btnRight.addEventListener('click', () => {
+        scrollContainer.scrollBy({
+          left: scrollAmount,
+          behavior: 'smooth'
+        });
+      });
+    }
+  });
+}
+
+// Ensure it runs when the DOM is ready (you can drop this into your existing DOMContentLoaded block)
+document.addEventListener('DOMContentLoaded', () => {
+  // ... your existing initialization code ...
+  initCarousels(); 
+});
 });
