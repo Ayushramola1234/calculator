@@ -246,3 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initCarousels(); 
 });
 });
+
+// Clear error message when the user types in any input field
+  document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', clearErr);
+  });
