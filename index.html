@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Calorie Calculator</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <link rel="stylesheet" href="style.css">
+  
+  <script src="script.js" defer></script>
+</head>
+<body>
+<div class="page">
+
+  <header class="hero">
+    <h1>Calorie Calculator</h1>
+    <p>Estimate how many calories your body burns at rest and your total daily energy expenditure based on your activity level.</p>
+  </header>
+
+  <div class="main-grid">
+
+    <div>
+      <div class="card">
+        <div class="card-body">
+
+          <div class="unit-tabs" role="group" aria-label="Unit system">
+            <button class="unit-tab active" id="tab-metric" onclick="setUnit('metric')">Metric (cm / kg)</button>
+            <button class="unit-tab" id="tab-imperial" onclick="setUnit('imperial')">Imperial (ft / lbs)</button>
+          </div>
+
+          <p class="slabel">Personal Info</p>
+
+          <div class="fields-2" style="margin-bottom:1.25rem">
+            <div>
+              <label class="field-label">Gender</label>
+              <div class="gender-row">
+                <button class="gender-btn male-on" id="btn-male" onclick="setSex('male')">Male</button>
+                <button class="gender-btn" id="btn-female" onclick="setSex('female')">Female</button>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="inp-age">Age</label>
+              <div class="input-shell">
+                <input type="number" id="inp-age" value="28" min="1" max="120"/>
+                <span class="input-unit">yrs</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="fields-2" style="margin-bottom:1.25rem">
+            <div>
+              <label class="field-label">Height</label>
+              <div id="hm" class="input-shell">
+                <input type="number" id="inp-cm" value="165"/>
+                <span class="input-unit">cm</span>
+              </div>
+              <div id="hi" class="height-split" style="display:none">
+                <div class="input-shell">
+                  <input type="number" id="inp-ft" value="5"/>
+                  <span class="input-unit">ft</span>
+                </div>
+                <div class="input-shell">
+                  <input type="number" id="inp-in" value="5"/>
+                  <span class="input-unit">in</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="field-label">Weight</label>
+              <div class="input-shell">
+                <input type="number" id="inp-weight" value="63"/>
+                <span class="input-unit" id="wt-unit">kg</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bf-field" id="bf-field">
+            <div class="bf-inner">
+              <div style="margin-bottom:1.25rem">
+                <div class="field-label-row">
+                  <label class="field-label" for="inp-bf" style="display:flex;align-items:center;gap:.3rem">
+                    <span class="ico16"><i data-lucide="info"></i></span> Body Fat %
+                  </label>
+                  <span class="req-badge">Required</span>
+                </div>
+                <div class="input-shell">
+                  <input type="number" id="inp-bf" placeholder="e.g. 22" min="1" max="100"/>
+                  <span class="input-unit">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="divider"/>
+
+          <p class="slabel">Formula</p>
+          <div class="formula-grid" id="fg">
+            <button class="f-pill active" data-f="mifflin" onclick="setFormula('mifflin')">
+              <span class="f-pill-name">Mifflin-St Jeor</span>
+              <span class="f-pill-sub">Best overall</span>
+            </button>
+            <button class="f-pill" data-f="harris" onclick="setFormula('harris')">
+              <span class="f-pill-name">Harris-Benedict</span>
+              <span class="f-pill-sub">Original formula</span>
+            </button>
+            <button class="f-pill" data-f="katch" onclick="setFormula('katch')">
+              <span class="f-pill-name">Katch-McArdle</span>
+              <span class="f-pill-sub">Uses body fat</span>
+            </button>
+          </div>
+          <div class="formula-mobile sel-wrap">
+            <select id="f-sel" onchange="setFormula(this.value)">
+              <option value="mifflin">Mifflin-St Jeor — Best overall</option>
+              <option value="harris">Harris-Benedict — Original</option>
+              <option value="katch">Katch-McArdle — Uses body fat</option>
+            </select>
+            <span class="sel-arrow"><i data-lucide="chevron-down" width="16" height="16"></i></span>
+          </div>
+
+          <hr class="divider"/>
+
+          <p class="slabel">Activity Level</p>
+          <div class="act-grid" id="ag">
+            <button class="a-btn" data-a="sedentary" onclick="setAct('sedentary')">
+              <span class="a-ico"><i data-lucide="laptop" width="18" height="18"></i></span>
+              <span><span class="a-name">Sedentary</span><span class="a-desc">Little or no exercise</span></span>
+            </button>
+            <button class="a-btn" data-a="light" onclick="setAct('light')">
+              <span class="a-ico"><i data-lucide="navigation" width="18" height="18"></i></span>
+              <span><span class="a-name">Lightly Active</span><span class="a-desc">Exercise 1–3 days/wk</span></span>
+            </button>
+            <button class="a-btn active" data-a="moderate" onclick="setAct('moderate')">
+              <span class="a-ico"><i data-lucide="activity" width="18" height="18"></i></span>
+              <span><span class="a-name">Moderately Active</span><span class="a-desc">Exercise 3–5 days/wk</span></span>
+            </button>
+            <button class="a-btn" data-a="very" onclick="setAct('very')">
+              <span class="a-ico"><i data-lucide="flame" width="18" height="18"></i></span>
+              <span><span class="a-name">Very Active</span><span class="a-desc">Exercise 6–7 days/wk</span></span>
+            </button>
+            <button class="a-btn full" data-a="extra" onclick="setAct('extra')">
+              <span class="a-ico"><i data-lucide="dumbbell" width="18" height="18"></i></span>
+              <span><span class="a-name">Extra Active</span><span class="a-desc">Very hard exercise / physical job</span></span>
+            </button>
+          </div>
+          <div class="act-mobile sel-wrap">
+            <select id="a-sel" onchange="setAct(this.value)">
+              <option value="sedentary">Sedentary</option>
+              <option value="light">Lightly Active</option>
+              <option value="moderate" selected>Moderately Active</option>
+              <option value="very">Very Active</option>
+              <option value="extra">Extra Active</option>
+            </select>
+            <span class="sel-arrow"><i data-lucide="chevron-down" width="16" height="16"></i></span>
+          </div>
+
+          <div class="action-area">
+            <div class="err-box" id="err-box">
+              <span class="ico16"><i data-lucide="alert-circle"></i></span>
+              <span id="err-txt"></span>
+            </div>
+            <div class="btn-row">
+              <button class="btn-calc" onclick="calculate()">Calculate Calories</button>
+              <button class="btn-reset" onclick="resetForm()" title="Reset">
+                <i data-lucide="refresh-cw" width="18" height="18"></i>
+              </button>
+            </div>
+          </div>
+
+        </div></div></div>
+
+    <div id="results-col">
+      <div class="card" style="min-height:520px">
+        <div class="card-body">
+
+          <div class="results-header">
+            <p class="slabel">Results</p>
+            <div class="results-top-row">
+              <div class="e-toggle">
+                <button class="e-btn active" id="e-kcal" onclick="setEnergy('kcal')">Calories</button>
+                <button class="e-btn" id="e-kj" onclick="setEnergy('kJ')">Kilojoules</button>
+              </div>
+              <div class="action-btns">
+                <button class="btn-out" onclick="savePrint()">
+                  <span class="ico16"><i data-lucide="save"></i></span> Save
+                </button>
+                <button class="btn-out" onclick="shareResult()">
+                  <span class="ico16"><i data-lucide="share-2"></i></span> Share
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="gauge-area">
+            <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="gGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#3b82f6"/>
+                  <stop offset="50%" stop-color="#10b981"/>
+                  <stop offset="100%" stop-color="#f59e0b"/>
+                </linearGradient>
+                <filter id="gShadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity=".18"/>
+                </filter>
+              </defs>
+              <path d="M20,100 A80,80 0 0 1 180,100" fill="none" stroke="#f1f5f9" stroke-width="15" stroke-linecap="round"/>
+              <path id="g-fill" d="M20,100 A80,80 0 0 1 180,100" fill="none" stroke="url(#gGrad)"
+                stroke-width="15" stroke-linecap="round"
+                stroke-dasharray="251.327" stroke-dashoffset="125.664"
+                style="transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)"/>
+              <circle id="g-dot" cx="100" cy="20" r="7.5" fill="white" stroke="#1e293b"
+                stroke-width="3.5" filter="url(#gShadow)"
+                style="transition:cx 1s cubic-bezier(.4,0,.2,1),cy 1s cubic-bezier(.4,0,.2,1)"/>
+            </svg>
+            <div class="gauge-text">
+              <div class="g-label">Maintenance</div>
+              <div class="g-value" id="g-val">—</div>
+              <div class="g-unit" id="g-unit">kcal / day</div>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="s-card blue">
+              <div class="s-label">Resting BMR</div>
+              <div class="s-val" id="s-bmr">—</div>
+              <div class="s-unit" id="s-bmr-u">kcal</div>
+            </div>
+            <div class="s-card green">
+              <div class="s-label">TDEE / Day</div>
+              <div class="s-val" id="s-tdee">—</div>
+              <div class="s-unit" id="s-tdee-u">kcal</div>
+            </div>
+            <div class="s-card neutral">
+              <div class="s-label">TDEE / Week</div>
+              <div class="s-val" id="s-week">—</div>
+              <div class="s-unit" id="s-week-u">kcal</div>
+            </div>
+            <div class="s-card neutral">
+              <div class="s-label">Formula Used</div>
+              <div class="s-txt" id="s-formula">Mifflin-St Jeor</div>
+            </div>
+          </div>
+
+          <hr class="divider"/>
+
+          <div>
+            <div class="qg-header">
+              <p class="slabel" style="margin:0">Calorie Goal</p>
+              <span class="qg-badge">Based on TDEE</span>
+            </div>
+            <div class="qg-grid">
+              <div class="qg-card">
+                <div class="qg-icon" style="color:#ef4444">
+                  <span class="ico18"><i data-lucide="trending-down"></i></span>
+                </div>
+                <div class="qg-title">Lose Weight</div>
+                <div class="qg-val" style="color:#ef4444" id="qg-lose">—</div>
+                <div class="qg-rate">−0.5 kg/week</div>
+              </div>
+              <div class="qg-card maintain-card">
+                <span class="qg-current">Current</span>
+                <div class="qg-icon" style="color:var(--emerald-500)">
+                  <span class="ico18"><i data-lucide="scale"></i></span>
+                </div>
+                <div class="qg-title">Maintain</div>
+                <div class="qg-val" style="color:var(--emerald-600)" id="qg-maint">—</div>
+                <div class="qg-rate">0 kg/week</div>
+              </div>
+              <div class="qg-card">
+                <div class="qg-icon" style="color:var(--blue-500)">
+                  <span class="ico18"><i data-lucide="trending-up"></i></span>
+                </div>
+                <div class="qg-title">Build Muscle</div>
+                <div class="qg-val" style="color:var(--blue-600)" id="qg-gain">—</div>
+                <div class="qg-rate">+0.5 kg/week</div>
+              </div>
+            </div>
+          </div>
+
+        </div></div></div>
+
+  </div><div class="macros-section">
+    <div class="card">
+      <div class="card-body">
+        <p class="sec-title" style="margin-bottom:1.5rem">Macronutrients</p>
+        <div class="macros-inner">
+          <div class="macro-selects">
+            <div>
+              <label class="slabel" style="padding:0 .375rem">Calorie Goal</label>
+              <div class="sel-wrap dark">
+                <select id="mg-sel" onchange="updateMacros()">
+                  <option value="-1000">Extreme Weight Loss</option>
+                  <option value="-500">Weight Loss</option>
+                  <option value="-250">Mild Weight Loss</option>
+                  <option value="0" selected>Maintain Weight</option>
+                  <option value="250">Mild Weight Gain</option>
+                  <option value="500">Weight Gain</option>
+                  <option value="1000">Fast Weight Gain</option>
+                </select>
+                <span class="sel-arrow"><i data-lucide="chevron-down" width="16" height="16"></i></span>
+              </div>
+              <p class="macro-hint" id="mg-hint">Maintains your current weight.</p>
+            </div>
+            <div>
+              <label class="slabel" style="padding:0 .375rem">Macro Preset</label>
+              <div class="sel-wrap dark">
+                <select id="mp-sel" onchange="updateMacros()">
+                  <option value="30,40,30">Balanced</option>
+                  <option value="30,35,35">Moderate Carb</option>
+                  <option value="40,20,40">Lower Carb</option>
+                  <option value="30,50,20">Higher Carb</option>
+                  <option value="20,5,75">Keto</option>
+                  <option value="40,30,30">High Protein</option>
+                  <option value="25,55,20">Low Fat</option>
+                  <option value="30,40,30">Zone Diet</option>
+                </select>
+                <span class="sel-arrow"><i data-lucide="chevron-down" width="16" height="16"></i></span>
+              </div>
+              <p class="macro-hint" id="mp-hint">30% Protein / 40% Carbs / 30% Fat</p>
+            </div>
+          </div>
+
+          <div class="macro-main-row">
+            <div class="macro-target-box">
+              <div class="mt-label">Target Calories</div>
+              <div class="mt-val"><span id="mt-val">—</span> <span class="mt-unit" id="mt-unit">kcal</span></div>
+            </div>
+            <div class="macro-bar-area">
+              <div class="bar-legend">
+                <span style="color:var(--blue-600)" id="bl-p">Protein 30%</span>
+                <span style="color:var(--emerald-500)" id="bl-c">Carbs 40%</span>
+                <span style="color:var(--orange-500)" id="bl-f">Fat 30%</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-p" id="bp" style="width:30%"></div>
+                <div class="bar-c" id="bc" style="width:40%"></div>
+                <div class="bar-f" id="bf2" style="width:30%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="macro-cards">
+            <div class="mc-card prot"><div class="mc-bar"></div>
+              <div class="mc-name">Protein</div>
+              <div class="mc-grams" id="mc-p">—g</div>
+              <div class="mc-kcal" id="mc-pk">—</div>
+            </div>
+            <div class="mc-card carb"><div class="mc-bar"></div>
+              <div class="mc-name">Carbs</div>
+              <div class="mc-grams" id="mc-c">—g</div>
+              <div class="mc-kcal" id="mc-ck">—</div>
+            </div>
+            <div class="mc-card fat"><div class="mc-bar"></div>
+              <div class="mc-name">Fat</div>
+              <div class="mc-grams" id="mc-f">—g</div>
+              <div class="mc-kcal" id="mc-fk">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-grid">
+    <div class="card">
+      <div class="card-body">
+        <div class="sec-title">Detailed Goals</div>
+        <p class="sec-desc">Targets calculated by adjusting your TDEE. For sustainable results, a gradual change of 0.25–0.5 kg per week is generally recommended.</p>
+        <div class="goal-rows" id="goal-rows"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.375rem">
+          <div class="sec-title">Activity Breakdown</div>
+          <span class="slabel" id="act-unit-lbl" style="margin:0">KCAL / DAY</span>
+        </div>
+        <p class="sec-desc">See how different activity levels impact your daily maintenance calories.</p>
+        <div class="act-rows" id="act-rows"></div>
+        <p class="act-note">Updates automatically based on your inputs</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="seo">
+
+    <div class="seo-sec">
+      <h2 class="seo-h2 xl">The Complete Guide to Calorie Counting</h2>
+      <p class="seo-p">A calorie calculator is an essential tool for anyone looking to manage their weight, build muscle, or simply understand their body's daily energy requirements. By calculating your Basal Metabolic Rate (BMR) and Total Daily Energy Expenditure (TDEE), you can determine exactly how much food you need to reach your health and fitness goals.</p>
+      <p class="seo-p">Whether you are embarking on a weight loss journey, trying to pack on lean muscle mass, or just want to maintain your current physique, understanding the math behind your metabolism is the first and most critical step. Guesswork leads to frustration — data leads to results.</p>
+    </div>
+
+    <div class="seo-sec">
+      <h2 class="seo-h2">BMR vs. TDEE: What's the Difference?</h2>
+      <div class="seo-2col">
+        <div class="info-card">
+          <div class="ic-ico blue ico20"><i data-lucide="activity"></i></div>
+          <h3>Basal Metabolic Rate (BMR)</h3>
+          <p class="seo-p">Your BMR is the number of calories your body burns at complete rest to perform basic life-sustaining functions — breathing, pumping blood, regulating temperature, and maintaining organ function. It accounts for roughly 60–75% of your total daily calorie expenditure.</p>
+          <p class="seo-p" style="margin:0">Think of BMR as the minimum energy your body needs to survive. It is primarily influenced by age, sex, height, and lean muscle mass. The more muscle you carry, the higher your BMR.</p>
+        </div>
+        <div class="info-card">
+          <div class="ic-ico green ico20"><i data-lucide="flame"></i></div>
+          <h3>Total Daily Energy Expenditure (TDEE)</h3>
+          <p class="seo-p">TDEE is the total number of calories you burn throughout the day. It combines your BMR with the calories spent on all physical activity — structured exercise, walking, standing, and even involuntary movement like fidgeting (known as NEAT).</p>
+          <p class="seo-p" style="margin:0">TDEE is your true maintenance calorie level. Eat below it to lose weight, above it to gain. We calculate it by multiplying your BMR by an activity multiplier ranging from 1.2 (sedentary) to 1.9 (extra active).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-sec">
+      <h2 class="seo-h2">The Science Behind the Formulas</h2>
+      <p class="seo-p">Our calculator offers three scientifically validated metabolic formulas. Each has different strengths depending on your body type and the data you have available.</p>
+      <ul class="formula-ul">
+        <li class="fi"><span class="fi-dot"></span><div>
+          <strong class="fi-name">Mifflin-St Jeor Equation <span style="font-size:.75rem;font-weight:600;color:var(--blue-600);background:var(--blue-50);padding:.1rem .5rem;border-radius:.25rem;margin-left:.375rem">Recommended</span></strong>
+          <p class="seo-p" style="margin-bottom:.5rem">Published in 1990, this is the most accurate formula for the modern general population and is the preferred equation recommended by the Academy of Nutrition and Dietetics. It consistently outperforms older equations in validation studies.</p>
+          <div class="fi-box">
+            <div style="margin-bottom:.3rem"><span class="fi-sex">Men:</span> (10 × weight kg) + (6.25 × height cm) − (5 × age) + 5</div>
+            <div><span class="fi-sex">Women:</span> (10 × weight kg) + (6.25 × height cm) − (5 × age) − 161</div>
+          </div>
+        </div></li>
+        <li class="fi"><span class="fi-dot"></span><div>
+          <strong class="fi-name">Harris-Benedict Equation</strong>
+          <p class="seo-p" style="margin-bottom:.5rem">Originally published in 1919 and revised by Roza and Shizgal in 1984, this was the gold standard for decades. While slightly less accurate for modern populations, it remains widely used in clinical settings and provides reliable baseline estimates for most adults.</p>
+          <div class="fi-box">
+            <div style="margin-bottom:.3rem"><span class="fi-sex">Men:</span> 88.362 + (13.397 × kg) + (4.799 × cm) − (5.677 × age)</div>
+            <div><span class="fi-sex">Women:</span> 447.593 + (9.247 × kg) + (3.098 × cm) − (4.330 × age)</div>
+          </div>
+        </div></li>
+        <li class="fi"><span class="fi-dot"></span><div>
+          <strong class="fi-name">Katch-McArdle Formula <span style="font-size:.75rem;font-weight:600;color:var(--emerald-700);background:var(--emerald-50);padding:.1rem .5rem;border-radius:.25rem;margin-left:.375rem">Best for athletes</span></strong>
+          <p class="seo-p" style="margin-bottom:.5rem">Unlike other formulas, Katch-McArdle bases BMR entirely on lean body mass — ignoring fat mass, which does not contribute significantly to resting metabolism. This makes it exceptionally precise for athletes, bodybuilders, and very lean or very obese individuals where other formulas tend to over- or under-estimate.</p>
+          <div class="fi-box">
+            <div style="margin-bottom:.3rem"><span class="fi-sex">Lean Body Mass:</span> Total Weight × (1 − Body Fat % / 100)</div>
+            <div><span class="fi-sex">BMR:</span> 370 + (21.6 × Lean Body Mass in kg)</div>
+          </div>
+        </div></li>
+      </ul>
+    </div>
+
+    <div class="seo-sec">
+      <h2 class="seo-h2">Using This Calculator for Weight Loss</h2>
+      <p class="seo-p">Calorie counting is one of the most evidence-backed strategies for weight management. Here is the step-by-step process:</p>
+      <ol class="seo-ol">
+        <li><strong>Calculate your TDEE.</strong> This is your maintenance level — the calories your body needs to stay at exactly the same weight. Use the Mifflin-St Jeor equation unless you know your body fat %, in which case use Katch-McArdle.</li>
+        <li><strong>Set a calorie deficit.</strong> A deficit of 500 kcal/day produces roughly 0.5 kg (1 lb) of weight loss per week. A 250 kcal deficit gives a slower, more sustainable result of ~0.25 kg/week. Never drop below 1,200 kcal/day (women) or 1,500 kcal/day (men) without medical supervision.</li>
+        <li><strong>Prioritise protein.</strong> Aim for 1.6–2.2 g of protein per kg of body weight. High protein intake preserves lean muscle mass during a deficit, keeps you fuller for longer, and has a higher thermic effect (your body burns more calories digesting it).</li>
+        <li><strong>Track consistently.</strong> Use a food diary app, weigh your food with a kitchen scale, and log everything — including cooking oils, sauces, and drinks. Research shows people consistently underestimate intake by 20–40%.</li>
+        <li><strong>Monitor progress and adjust.</strong> Weigh yourself at the same time each morning. If the scale does not move after 2–3 weeks, reduce intake by a further 100–150 kcal or increase activity. Re-calculate your TDEE every 5–10 kg of weight change.</li>
+      </ol>
+      <p class="seo-p"><strong>Note:</strong> These calculations provide excellent estimates, but individual metabolism varies. Use your actual weight trend over 4+ weeks to calibrate your true maintenance level.</p>
+    </div>
+
+    <div class="seo-sec">
+      <h2 class="seo-h2">Understanding Macronutrients</h2>
+      <p class="seo-p">Calories determine <em>whether</em> you lose or gain weight. Macronutrients determine <em>what kind</em> of weight you lose or gain — fat versus muscle. Getting both right is the difference between a lean, healthy body and simply being lighter.</p>
+      <div class="m3">
+        <div class="mi">
+          <h4 class="bl">Protein (4 kcal/g)</h4>
+          <p>The most important macronutrient for body composition. Protein builds and repairs muscle tissue, has the highest satiety per calorie, and has a thermic effect of ~25–30% (your body burns more energy digesting it). Aim for 1.6–2.2 g per kg of body weight daily.</p>
+        </div>
+        <div class="mi">
+          <h4 class="gn">Carbohydrates (4 kcal/g)</h4>
+          <p>The body's preferred fuel source, especially for high-intensity exercise. Carbohydrates replenish muscle glycogen, support brain function, and regulate mood. Quality matters — prioritise whole grains, vegetables, legumes, and fruit over refined sugars.</p>
+        </div>
+        <div class="mi">
+          <h4 class="am">Dietary Fat (9 kcal/g)</h4>
+          <p>Essential for hormone production (including testosterone and oestrogen), absorption of vitamins A, D, E, and K, brain health, and joint lubrication. At 9 kcal/g, fat is the most energy-dense macronutrient — track it carefully. Focus on unsaturated sources: olive oil, nuts, avocado, and oily fish.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-sec">
+      <h2 class="seo-h2">6 Tips for More Accurate Calorie Tracking</h2>
+      <div class="tip-grid">
+        <div class="tip"><div class="tip-n">1</div><div><h4>Always Use a Food Scale</h4><p>Volume measurements (cups, tablespoons) can be off by 20–50%. Weighing food in grams is the single biggest improvement you can make to tracking accuracy.</p></div></div>
+        <div class="tip"><div class="tip-n">2</div><div><h4>Track Every Oil and Sauce</h4><p>Cooking oils, salad dressings, butter, and sauces are calorie-dense and easy to forget. A single tablespoon of olive oil adds 119 calories — these accumulate to hundreds per day.</p></div></div>
+        <div class="tip"><div class="tip-n">3</div><div><h4>Log All Drinks</h4><p>Sodas, fruit juices, sports drinks, alcohol, and milk in coffee all contain significant calories. Liquid calories are particularly easy to overlook and can silently prevent fat loss.</p></div></div>
+        <div class="tip"><div class="tip-n">4</div><div><h4>Pre-log Your Day</h4><p>Planning meals ahead of time is more effective than logging after eating. It lets you spot problems before they happen and reduces impulsive high-calorie choices.</p></div></div>
+        <div class="tip"><div class="tip-n">5</div><div><h4>Track Weekends Too</h4><p>Many people track perfectly Monday–Friday but completely abandon tracking on weekends. A single "cheat weekend" with an extra 1,500–2,000 kcal can erase an entire week's deficit.</p></div></div>
+        <div class="tip"><div class="tip-n">6</div><div><h4>Recalculate After 5–10 kg Change</h4><p>As your body weight changes, so does your TDEE. Failing to recalculate is a common reason for plateaus — you may be eating at maintenance without realising it.</p></div></div>
+      </div>
+    </div>
+
+    <div class="seo-sec">
+      <h2 class="seo-h2">Zigzag Calorie Cycling to Break Plateaus</h2>
+      <p class="seo-p">When you eat the same number of calories every day, your body can adapt over time — lowering your TDEE through reduced non-exercise movement (NEAT) and slight hormonal shifts. This is sometimes called "metabolic adaptation" and it's a key reason why weight loss slows or stalls.</p>
+      <p class="seo-p">Zigzag calorie cycling combats this by varying your daily intake while hitting the same weekly total. For example, instead of eating exactly 1,800 kcal every day (12,600/week), you might eat 2,100 kcal on three days and 1,500 kcal on the other four — still totalling 12,600 kcal. The variation keeps your metabolism guessing and can improve long-term adherence for many people.</p>
+      <p class="seo-p"><strong>How to implement it:</strong> Align your higher-calorie days with your most intense training days (when your body needs more fuel for performance and recovery) and your lower-calorie days with rest days or light-activity days.</p>
+    </div>
+
+    <div class="seo-sec">
+      <h2 class="seo-h2">The Role of Hydration in Weight Management</h2>
+      <p class="seo-p">While tracking calories and macros is essential, hydration is frequently overlooked. Water has zero calories yet plays a vital role in fat metabolism, appetite regulation, and exercise performance.</p>
+      <p class="seo-p">Research shows that drinking 500 ml of water before a meal can reduce calorie intake at that meal by approximately 13%. Cold water also has a modest thermogenic effect — your body expends a small amount of energy to warm it to body temperature. More importantly, mild dehydration (even 1–2%) is consistently mistaken for hunger, leading to unnecessary snacking.</p>
+      <p class="seo-p"><strong>A practical guideline:</strong> Aim for 35 ml of water per kg of body weight per day, and increase by 500–750 ml for every hour of moderate exercise.</p>
+    </div>
+
+    <div class="seo-sec">
+      <h2 class="seo-h2">Calorie Reference: Common Foods</h2>
+      <p class="seo-p">Use this quick reference table to estimate the caloric content of everyday foods. All values are approximate and may vary by brand or preparation method.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Food</th><th>Serving Size</th><th>Calories (kcal)</th><th>Kilojoules (kJ)</th><th>Protein (g)</th></tr></thead>
+          <tbody>
+            <tr><td>Apple</td><td>1 medium (182g)</td><td>95</td><td>397</td><td>0.5</td></tr>
+            <tr><td>Banana</td><td>1 medium (118g)</td><td>105</td><td>439</td><td>1.3</td></tr>
+            <tr><td>Chicken breast, cooked</td><td>100g</td><td>165</td><td>690</td><td>31</td></tr>
+            <tr><td>White rice, cooked</td><td>1 cup (186g)</td><td>242</td><td>1,013</td><td>4.4</td></tr>
+            <tr><td>Whole egg</td><td>1 large (50g)</td><td>78</td><td>327</td><td>6.3</td></tr>
+            <tr><td>Whole wheat bread</td><td>1 slice (28g)</td><td>69</td><td>289</td><td>3.6</td></tr>
+            <tr><td>Salmon, baked</td><td>100g</td><td>206</td><td>862</td><td>20</td></tr>
+            <tr><td>Almonds</td><td>28g (~23 nuts)</td><td>164</td><td>686</td><td>6</td></tr>
+            <tr><td>Avocado</td><td>½ medium (75g)</td><td>120</td><td>502</td><td>1.5</td></tr>
+            <tr><td>Sweet potato, baked</td><td>1 medium (130g)</td><td>112</td><td>469</td><td>2.1</td></tr>
+            <tr><td>Broccoli, steamed</td><td>1 cup (91g)</td><td>31</td><td>130</td><td>2.6</td></tr>
+            <tr><td>Olive oil</td><td>1 tbsp (14g)</td><td>119</td><td>498</td><td>0</td></tr>
+            <tr><td>Oatmeal, cooked</td><td>1 cup (234g)</td><td>158</td><td>661</td><td>6</td></tr>
+            <tr><td>Greek yogurt, non-fat</td><td>170g</td><td>100</td><td>418</td><td>17</td></tr>
+            <tr><td>Peanut butter</td><td>2 tbsp (32g)</td><td>190</td><td>795</td><td>8</td></tr>
+            <tr><td>Quinoa, cooked</td><td>1 cup (185g)</td><td>222</td><td>929</td><td>8.1</td></tr>
+            <tr><td>Lentils, cooked</td><td>1 cup (198g)</td><td>230</td><td>962</td><td>17.9</td></tr>
+            <tr><td>Chia seeds</td><td>28g (2 tbsp)</td><td>138</td><td>577</td><td>4.7</td></tr>
+            <tr><td>Whole milk</td><td>1 cup (244ml)</td><td>149</td><td>624</td><td>8</td></tr>
+            <tr><td>Cheddar cheese</td><td>28g (1 oz.)</td><td>113</td><td>473</td><td>7</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="seo-sec">
+      <h2 class="seo-h2">Calories Burned by Exercise (Per Hour)</h2>
+      <p class="seo-p">Calorie burn estimates below are based on METs (Metabolic Equivalent of Task) data and vary by individual fitness level, intensity, and body composition. Use these as rough guides, not exact measurements.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Activity</th><th>Intensity</th><th>125 lb (57 kg)</th><th>155 lb (70 kg)</th><th>185 lb (84 kg)</th></tr></thead>
+          <tbody>
+            <tr><td>Walking</td><td>3.5 mph</td><td>215</td><td>267</td><td>319</td></tr>
+            <tr><td>Running</td><td>9 min/mile</td><td>624</td><td>773</td><td>923</td></tr>
+            <tr><td>Cycling</td><td>12–14 mph</td><td>454</td><td>562</td><td>671</td></tr>
+            <tr><td>Swimming</td><td>Freestyle, moderate</td><td>397</td><td>492</td><td>587</td></tr>
+            <tr><td>Weightlifting</td><td>General / moderate</td><td>170</td><td>211</td><td>252</td></tr>
+            <tr><td>HIIT</td><td>High intensity</td><td>450</td><td>560</td><td>670</td></tr>
+            <tr><td>Yoga</td><td>Hatha</td><td>240</td><td>298</td><td>356</td></tr>
+            <tr><td>Jump Rope</td><td>Moderate pace</td><td>563</td><td>698</td><td>833</td></tr>
+            <tr><td>Rowing (machine)</td><td>Moderate effort</td><td>420</td><td>520</td><td>622</td></tr>
+            <tr><td>Tennis</td><td>Singles</td><td>454</td><td>562</td><td>671</td></tr>
+            <tr><td>Basketball</td><td>Game play</td><td>472</td><td>584</td><td>697</td></tr>
+            <tr><td>Dancing</td><td>Aerobic</td><td>330</td><td>410</td><td>490</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="seo-sec" style="margin-top:5rem">
+      <h2 class="seo-h2 xl" style="text-align:center;margin-bottom:2.5rem">Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <div class="faq">
+          <div class="faq-ico ico16"><i data-lucide="help-circle"></i></div>
+          <div><h3>Should I eat back the calories I burn from exercise?</h3>
+          <p>Generally, no — and this is one of the most common mistakes people make. If you selected an activity level other than Sedentary when calculating your TDEE, those exercise calories are already built into your maintenance number. Eating them back on top would put you in a calorie surplus and stall weight loss.</p></div>
+        </div>
+        <div class="faq">
+          <div class="faq-ico ico16"><i data-lucide="help-circle"></i></div>
+          <div><h3>How often should I recalculate my TDEE?</h3>
+          <p>Recalculate every time you lose or gain 5–10 pounds (2–4 kg), or whenever your activity level changes significantly — for example, starting a new training programme or taking a break from exercise. As your body composition changes, so does your caloric need.</p></div>
+        </div>
+        <div class="faq">
+          <div class="faq-ico ico16"><i data-lucide="help-circle"></i></div>
+          <div><h3>What is a safe and sustainable rate of weight loss?</h3>
+          <p>Health guidelines from the NHS, CDC, and WHO consistently recommend 0.5–1 kg (1–2 lbs) per week as a safe and sustainable rate. Faster loss increases the risk of muscle wasting, nutrient deficiencies, gallstones, and metabolic adaptation that makes it harder to keep weight off long-term.</p></div>
+        </div>
+        <div class="faq">
+          <div class="faq-ico ico16"><i data-lucide="help-circle"></i></div>
+          <div><h3>Do calories matter more than macros?</h3>
+          <p>For body weight — yes, total calories are the primary driver (governed by the laws of thermodynamics). But for body <em>composition</em> (your ratio of fat to muscle), hormonal health, athletic performance, and long-term satiety, the balance of macronutrients matters enormously. The ideal approach is to manage both: hit your calorie target and hit your protein target as a minimum.</p></div>
+        </div>
+        <div class="faq">
+          <div class="faq-ico ico16"><i data-lucide="help-circle"></i></div>
+          <div><h3>Why is my calorie calculator result different from other calculators?</h3>
+          <p>Different calculators use different formulas and activity multipliers. The Mifflin-St Jeor equation used by default here is considered the most validated for modern adults. Slight differences (±100–200 kcal) between calculators are normal and within the margin of error for any population-level formula.</p></div>
+        </div>
+        <div class="faq">
+          <div class="faq-ico ico16"><i data-lucide="help-circle"></i></div>
+          <div><h3>Which BMR formula is the most accurate?</h3>
+          <p>For most people, Mifflin-St Jeor (1990) is the most accurate — validated in multiple large-scale studies. If you are very lean, very muscular, or very obese and know your body fat percentage, Katch-McArdle is more precise because it accounts for lean body mass directly rather than extrapolating from height and weight.</p></div>
+        </div>
+        <div class="faq">
+          <div class="faq-ico ico16"><i data-lucide="help-circle"></i></div>
+          <div><h3>What should I do if my weight loss has stalled?</h3>
+          <p>First, verify you are tracking accurately — weigh your food, log everything, and check for hidden calories in sauces and drinks. If tracking is accurate, your TDEE has likely adapted downward. Options include: (1) recalculate TDEE at your new body weight, (2) take a 2-week "diet break" at maintenance calories to reset hormones, (3) increase step count rather than cutting more food, or (4) implement zigzag calorie cycling to avoid further metabolic adaptation.</p></div>
+        </div>
+        <div class="faq">
+          <div class="faq-ico ico16"><i data-lucide="help-circle"></i></div>
+          <div><h3>How do I calculate my lean body mass for Katch-McArdle?</h3>
+          <p>Lean body mass (LBM) = Total body weight × (1 − body fat% / 100). For example, if you weigh 80 kg and have 20% body fat: LBM = 80 × (1 − 0.20) = 64 kg. You can estimate body fat % using DEXA scanning, hydrostatic weighing, skinfold calipers, or a smart body composition scale. DEXA is the most accurate method available.</p></div>
+        </div>
+      </div>
+    </div>
+
+  </div><div class="cc-sec">
+    <div class="cc-hdr">
+      <div><h2>Similar Calculators</h2><div class="cc-bar"></div></div>
+      <div class="nav-btns">
+        <button class="nav-btn ico16"><i data-lucide="chevron-left"></i></button>
+        <button class="nav-btn ico16"><i data-lucide="chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="cc-scroll">
+      <div class="cc-card"><div class="cc-top"><div class="cc-ico rose ico18"><i data-lucide="activity"></i></div><div><div class="cc-title">BMR Calculator</div><div class="cc-cat">Fitness &amp; Health</div></div></div><p class="cc-desc">Calculate your Basal Metabolic Rate to know how many calories your body burns at rest.</p><div class="cc-foot"><span>Open Calculator</span><span class="ico16"><i data-lucide="chevron-right"></i></span></div></div>
+      <div class="cc-card"><div class="cc-top"><div class="cc-ico gn ico18"><i data-lucide="leaf"></i></div><div><div class="cc-title">Calorie Calculator</div><div class="cc-cat">Fitness &amp; Health</div></div></div><p class="cc-desc">Estimate the number of calories you need daily to maintain, lose, or gain weight.</p><div class="cc-foot"><span>Open Calculator</span><span class="ico16"><i data-lucide="chevron-right"></i></span></div></div>
+      <div class="cc-card"><div class="cc-top"><div class="cc-ico amb">IW</div><div><div class="cc-title">Ideal Weight</div><div class="cc-cat">Fitness &amp; Health</div></div></div><p class="cc-desc">Determine your ideal body weight based on your height, gender, and age.</p><div class="cc-foot"><span>Explore Category</span><span class="ico16"><i data-lucide="chevron-right"></i></span></div></div>
+    </div>
+  </div>
+
+  <div class="cc-sec" style="margin-bottom:8rem">
+    <div class="cc-hdr">
+      <div><h2>Popular Calculators</h2><div class="cc-bar"></div></div>
+      <div class="nav-btns">
+        <button class="nav-btn ico16"><i data-lucide="chevron-left"></i></button>
+        <button class="nav-btn ico16"><i data-lucide="chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="cc-scroll">
+      <div class="cc-card"><div class="cc-top"><div class="cc-ico amb">IW</div><div><div class="cc-title">Ideal Weight</div><div class="cc-cat">Fitness &amp; Health</div></div></div><p class="cc-desc">Determine your ideal body weight based on your height, gender, and age.</p><div class="cc-foot"><span>Explore Category</span><span class="ico16"><i data-lucide="chevron-right"></i></span></div></div>
+      <div class="cc-card"><div class="cc-top"><div class="cc-ico rose ico18"><i data-lucide="activity"></i></div><div><div class="cc-title">BMR Calculator</div><div class="cc-cat">Fitness &amp; Health</div></div></div><p class="cc-desc">Calculate your Basal Metabolic Rate to know how many calories your body burns at rest.</p><div class="cc-foot"><span>Open Calculator</span><span class="ico16"><i data-lucide="chevron-right"></i></span></div></div>
+      <div class="cc-card"><div class="cc-top"><div class="cc-ico gn ico18"><i data-lucide="leaf"></i></div><div><div class="cc-title">Calorie Calculator</div><div class="cc-cat">Fitness &amp; Health</div></div></div><p class="cc-desc">Estimate the number of calories you need daily to maintain, lose, or gain weight.</p><div class="cc-foot"><span>Open Calculator</span><span class="ico16"><i data-lucide="chevron-right"></i></span></div></div>
+    </div>
+  </div>
+
+</div></body>
+</html>
