@@ -133,7 +133,7 @@ function updateMacros() {
   const target = S.tdee + off; const e = el();
 // Safety check: Warn if calories drop below 1200
   if (target < 1200) {
-    $('mg-hint').innerHTML = `<span style="color: var(--red-600); font-weight: 700;">Warning: Eating below 1,200 kcal/day is not advised.</span>`;
+    $('mg-hint').innerHTML = `<span style="color: var(--red-500); font-weight: 700;">Warning: Eating below 1,200 kcal/day is not advised.</span>`;
   } else {
     $('mg-hint').textContent = HINT_MAP[String(off)] || '';
   }  $('mp-hint').textContent = p + '% Protein / ' + c + '% Carbs / ' + f + '% Fat';
